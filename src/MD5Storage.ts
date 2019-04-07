@@ -17,7 +17,7 @@ export class MD5Storage{
      * 获得path文件的存储路径
      * @param path 
      */
-    getPath(path:string | Buffer){
+    getPath(path:string ){
         let md5 = wlutil.md5(path);
         return `${this.folder}/${md5.substr(0,2)}/${md5}`;
     }
@@ -26,7 +26,7 @@ export class MD5Storage{
      * 用path的md5值，保存path指定文件到存储里
      * @param path 
      */
-    save(path:string | Buffer){
+    save(path:string ){
         this.saveOther(path,path);
     }
 
@@ -35,10 +35,18 @@ export class MD5Storage{
      * @param path 
      * @param file 
      */
-    saveOther(path:string | Buffer,file:string | Buffer){
+    saveOther(path:string ,file:string ){
         let md5Path = this.getPath(path);
         wlutil.createFolders(md5Path,true);
-        fs.writeFileSync(md5Path,file);
+        fs.writeFileSync(md5Path,fs.readFileSync(file));
+    }
+
+    getValidPath(path:string){
+        let md5path = this.getPath(path);
+        if(fs.existsSync(md5path)){
+            return md5path;
+        }
+        
     }
 
     /**
